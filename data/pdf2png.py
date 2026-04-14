@@ -50,7 +50,7 @@ def convert_all(dpi: int = 200) -> list[Path]:
     """
     pdfs = sorted(RAW_PDF_DIR.glob("*.pdf"))
     if not pdfs:
-        print("No PDFs found in raw_pdf/")
+        print("No PDFs found in data/raw_pdf/")
         return []
 
     pending = [p for p in pdfs if not _already_converted(p)]
