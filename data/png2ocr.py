@@ -1,9 +1,9 @@
 """
 png2ocr.py
 
-Converts png in [proj root]/data/png/
-to txt in [proj root]/data/ocr .
-Uses Paddle OCR for this process .
+Converts png in [proj root]/{PNG_DIR} .
+to txt in [proj root]/{OCR_DIR} .
+Uses easyocr for this process .
 Skips already converted png .
 """
 
@@ -35,19 +35,19 @@ def convert_png(png_path: Path) -> Path:
     result = reader.readtext(str(png_path), detail=0)
 
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(result))
+        f.write("\n".join(str(item) for item in result))
 
     return out_path
 
 
 def convert_all() -> list[Path]:
     """
-    run ocr on all png's in [proj root]/data/png/
-    return all ouptut .txt paths
+    run ocr on all png's in [proj root]/{PNG_DIR}
+    return all ouptut TXT paths
     """
     pngs = sorted(PNG_DIR.glob("*.png"))
     if not pngs:
-        print("No PNGs found in data/png/")
+        print(f"No PNGs found in {PNG_DIR}")
         return []
 
     pending = [p for p in pngs if not _already_converted(p)]
