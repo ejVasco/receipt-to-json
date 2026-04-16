@@ -210,3 +210,5 @@ __marimo__/
 # ignore data files
 *.pdf 
 *.png
+*.txt 
+*.json
