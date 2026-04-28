@@ -15,22 +15,25 @@ OCR_DIR = Path("data/ocr/")
 LABEL_DIR = Path("data/labels")
 
 BLANK_LABEL = {
-    "business_name": "",
-    "business_address": "",
-    "transaction_date": "",
-    "transaction_time": "",
+    "merchant": "",
+    "address": "",
+    "date": "YYYY-MM-SS",
+    "time": "HH:MM:SS",
     "items": [
         {
-            "name": "",
             "quantity": None,
-            "unit_price": None,
-            "total_price": None,
+            "name": "",
+            "price": None,
+            "modifiers": [{"name": "", "price": None}],
         }
     ],
-    "subtotal": None,
-    "tax": None,
-    "tip": None,
-    "total": None,
+    "totals": {
+        "subtotal": None,
+        "discount": None,
+        "tax": None,
+        "tip": None,
+        "total": None,
+    },
 }
 
 
