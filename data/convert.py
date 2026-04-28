@@ -1,26 +1,33 @@
 """
 convert.py
-single file for running pdf -> png -> ocr (txt)
+single file for running pdf -> png -> ocr (txt) -> labels (json)
+or
+all files pdf -> png -> ocr (txt) -> labels (json)
 
 (reminder to run from root)
 usage:
-    python -m data.convert
-    python -m data.convert --pdf   # only convert PDFs to PNGs
-    python -m data.convert --ocr   # only run ocr on PNGs
-    python -m data.convert --force # force reconvert even if already converted file found
+    python -m data.convert # full preprocess for all files
 """
 
-import argparse
-import shutil
 from pathlib import Path
 
-import data.pdf2png
-import data.png2ocr
+from data.genlabels import gen_labels
+from data.pdf2png import pdfs2pngs
+from data.png2ocr import pngs2ocrs
 
 
-def run() -> None:
-    pass
+def convert_all() -> list[Path]:
+    """
+    full preprocess pipeline and gen blank labels
+    args:
+        none
+    returns:
+        list[Path] of labels (json)
+    """
+    pdfs2pngs()
+    pngs2ocrs()
+    return gen_labels()
 
 
 if __name__ == "__main__":
-    run()
+    convert_all()
