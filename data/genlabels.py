@@ -2,7 +2,7 @@
 gen_blank_labels.py
 
 basic script to generate blank JSON files for txt's in [project root]/{OCR_DIR} .
-these JSON are put in [project root]/{LABEL_DIR}
+these JSON are put in [project root]/{LABELS_DIR}
 skips existing JSON labels .
 
 also contains
@@ -11,8 +11,7 @@ also contains
 import json
 from pathlib import Path
 
-OCR_DIR = Path("data/ocr/")
-LABEL_DIR = Path("data/labels")
+from config import LABELS_DIR, OCR_DIR
 
 BLANK_LABEL = {
     "merchant": "",
@@ -41,7 +40,7 @@ def _already_generated(txt_path: Path) -> bool:
     """
     return true if label for txt already generated/exists
     """
-    return (LABEL_DIR / f"{txt_path.stem}.json").exists()
+    return (LABELS_DIR / f"{txt_path.stem}.json").exists()
 
 
 def gen_label(txt_path: Path) -> Path:
@@ -49,12 +48,12 @@ def gen_label(txt_path: Path) -> Path:
     create label for single txt
     return path to output json
     """
-    LABEL_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = LABEL_DIR / f"{txt_path.stem}.json"
+    LABELS_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = LABELS_DIR / f"{txt_path.stem}.json"
 
     with out_path.open("w") as f:
         json.dump(BLANK_LABEL, f, indent=2)
-    return OCR_DIR  # temp
+    return out_path
 
 
 def gen_labels() -> list[Path]:

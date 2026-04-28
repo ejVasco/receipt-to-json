@@ -11,8 +11,7 @@ from pathlib import Path
 
 import easyocr
 
-PNG_DIR = Path("data/png")
-OCR_DIR = Path("data/ocr")
+from config import OCR_DIR, PNG_DIR
 
 reader = easyocr.Reader(["en"])
 
@@ -24,7 +23,7 @@ def _already_converted(png_path: Path) -> bool:
     return (OCR_DIR / f"{png_path.stem}.txt").exists()
 
 
-def convert_png(png_path: Path) -> Path:
+def png2ocr(png_path: Path) -> Path:
     """
     run ocr on a single png
     returns output .txt
@@ -40,7 +39,7 @@ def convert_png(png_path: Path) -> Path:
     return out_path
 
 
-def convert_all() -> list[Path]:
+def pngs2ocrs() -> list[Path]:
     """
     run ocr on all png's in [proj root]/{PNG_DIR}
     return all ouptut TXT paths
@@ -58,10 +57,10 @@ def convert_all() -> list[Path]:
     all_outputs = []
     for png in pending:
         print(f"  Processing: {png.name}")
-        all_outputs.append(convert_png(png))
+        all_outputs.append(png2ocr(png))
 
     return all_outputs
 
 
 if __name__ == "__main__":
-    convert_all()
+    pngs2ocrs()

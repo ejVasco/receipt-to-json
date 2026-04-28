@@ -12,9 +12,7 @@ from pathlib import Path
 
 import fitz  # pymupdf
 
-# paths are from project root
-RAW_PDF_DIR = Path("data/raw_pdf")
-PNG_DIR = Path("data/png")
+from config import PDF_DIR, PNG_DIR
 
 
 def _already_converted(pdf_path: Path) -> bool:
@@ -24,7 +22,7 @@ def _already_converted(pdf_path: Path) -> bool:
     return (PNG_DIR / f"{pdf_path.stem}.png").exists()
 
 
-def convert_pdf(pdf_path: Path, dpi: int = 200) -> Path:
+def pdf2png(pdf_path: Path, dpi: int = 200) -> Path:
     """
     Convert a single PDF to a PNG
     Returns output path
@@ -43,12 +41,12 @@ def convert_pdf(pdf_path: Path, dpi: int = 200) -> Path:
     return out_path
 
 
-def convert_all(dpi: int = 200) -> list[Path]:
+def pdfs2pngs(dpi: int = 200) -> list[Path]:
     """
     Converts all not yet converted PDFs in [proj root]/data/raw_pdf/
     Returns all list of output PNG paths
     """
-    pdfs = sorted(RAW_PDF_DIR.glob("*.pdf"))
+    pdfs = sorted(PDF_DIR.glob("*.pdf"))
     if not pdfs:
         print("No PDFs found in data/raw_pdf/")
         return []
@@ -61,10 +59,10 @@ def convert_all(dpi: int = 200) -> list[Path]:
     all_outputs = []
     for pdf in pending:
         print(f"  Processing: {pdf.name}")
-        all_outputs.append(convert_pdf(pdf, dpi=dpi))
+        all_outputs.append(pdf2png(pdf, dpi=dpi))
 
     return all_outputs
 
 
 if __name__ == "__main__":
-    convert_all()
+    pdfs2pngs()
