@@ -212,3 +212,5 @@ __marimo__/
 *.png
 *.txt 
 *.json
+# ignore model
+*.pt
