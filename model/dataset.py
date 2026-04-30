@@ -108,11 +108,17 @@ def label_line(line: str, label_json: dict, position: float) -> str:
 
     # check for price total
     if _PRICE_RE.search(stripped):
-        if total_s and total_s in re.sub(r"[^\d.]", "", stripped):
+        stripped_digits = re.sub(r"[^\d.]", "", stripped)
+        if total_s and total_s in stripped_digits:
             return "TOTAL"
-        if tax_s and tax_s in re.sub(r"[^\d.]", "", stripped):
+        if tax_s and tax_s in stripped_digits:
             return "TAX"
-        if subtotal_s and subtotal_s in re.sub(r"[^\d.]", "", stripped):
+        if subtotal_s and subtotal_s in stripped_digits:
+            return "SUBTOTAL"
+        # keyword fallbacks if numeric  matching failed for all three
+        if re.search(r"\btax\b", stripped, re.IGNORECASE):
+            return "TAX"
+        if re.search(r"\bsubtotal\b", stripped, re.IGNORECASE):
             return "SUBTOTAL"
 
     # 3. items
@@ -165,7 +171,13 @@ def label_line(line: str, label_json: dict, position: float) -> str:
 
 
 # --- feature extraction -----
-FEATURE_DIM = 15
+FEATURE_DIM = 21
+
+TAX_KW = {"tax", "vat", "gst"}
+SUB_KW = {"subtotal", "sub", "sub-total"}
+TOTAL_KW = {"total", "amount", "due", "balance"}
+TIP_KW = {"tip", "gratuity"}
+DISC_KW = {"discount", "savings", "off", "coupon"}
 
 
 def extract_features(line: str, line_idx: int, total_lines: int) -> list[float]:
@@ -202,6 +214,14 @@ def extract_features(line: str, line_idx: int, total_lines: int) -> list[float]:
     has_modifier = 1.0 if re.match(r"^\s*[+\-]", s) else 0.0
     ends_price = 1.0 if re.search(r"\d{1,4}[.,]\d{2}\s*$", s) else 0.0
 
+    tokens = set(re.sub(r"[^a-z\s]", "", s.lower()).split())
+    has_tax_kw = 1.0 if tokens & {"tax", "vat", "gst"} else 0.0
+    has_sub_kw = 1.0 if tokens & {"subtotal", "sub-total"} else 0.0
+    has_total_kw = 1.0 if tokens & {"total", "amount", "due", "balance"} else 0.0
+    has_tip_kw = 1.0 if tokens & {"tip", "gratuity"} else 0.0
+    has_disc_kw = 1.0 if tokens & {"discount", "savings", "coupon"} else 0.0
+    starts_digit = 1.0 if re.match(r"^\d", s) else 0.0
+
     return [
         pos,  # 0
         1.0 if pos < 0.20 else 0.0,  # 1
@@ -218,6 +238,12 @@ def extract_features(line: str, line_idx: int, total_lines: int) -> list[float]:
         has_modifier,  # 12
         punct / n,  # 13
         ends_price,  # 14
+        has_tax_kw,  # 15
+        has_sub_kw,  # 16
+        has_total_kw,  # 17
+        has_tip_kw,  # 18
+        has_disc_kw,  # 19
+        starts_digit,  # 20
     ]
 
 
