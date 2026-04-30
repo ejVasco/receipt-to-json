@@ -63,7 +63,7 @@ def _predict_lines(lines: list[str], model: ReceiptMLP) -> list[str]:
             x = torch.tensor(feats, dtype=torch.float32).unsqueeze(0)
             pred_idx = int(model(x).argmax(dim=1).item())
             preds.append(LABELS[pred_idx])
-            return preds
+        return preds
 
 
 def _extract_price(text: str) -> float | None:
