@@ -210,7 +210,7 @@ __marimo__/
 # ignore data files
 *.pdf 
 *.png
-*.txt 
+*ocr/*.txt
 *.json
 # ignore model
 *.pt
