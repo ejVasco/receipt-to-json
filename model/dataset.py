@@ -223,27 +223,27 @@ def extract_features(line: str, line_idx: int, total_lines: int) -> list[float]:
     starts_digit = 1.0 if re.match(r"^\d", s) else 0.0
 
     return [
-        pos,  # 0
-        1.0 if pos < 0.20 else 0.0,  # 1
-        1.0 if pos > 0.80 else 0.0,  # 2
-        min(len(s) / 80.0, 1.0),  # 3
-        min(len(words) / 10.0, 1.0),  # 4
-        digits / n,  # 5
-        alphas / n,  # 6
-        uppers / max(alphas, 1),  # 7
-        1.0 if "$" in s else 0.0,  # 8
-        1.0 if _PRICE_RE.search(s) else 0.0,  # 9
-        1.0 if _DATE_RE.search(s) else 0.0,  # 10
-        1.0 if _TIME_RE.search(s) else 0.0,  # 11
-        has_modifier,  # 12
-        punct / n,  # 13
-        ends_price,  # 14
-        has_tax_kw,  # 15
-        has_sub_kw,  # 16
-        has_total_kw,  # 17
-        has_tip_kw,  # 18
-        has_disc_kw,  # 19
-        starts_digit,  # 20
+        pos,  # 0: relative line position
+        1.0 if pos < 0.20 else 0.0,  # 1: if top 20% of receipt
+        1.0 if pos > 0.80 else 0.0,  # 2: if last 20% of receipt
+        min(len(s) / 80.0, 1.0),  # 3: char count
+        min(len(words) / 10.0, 1.0),  # 4: word count
+        digits / n,  # 5: frac of chars that are dig
+        alphas / n,  # 6: frac of chars that are alpha
+        uppers / max(alphas, 1),  # 7: frac of alpha that are cap
+        1.0 if "$" in s else 0.0,  # 8: if $ present
+        1.0 if _PRICE_RE.search(s) else 0.0,  # 9: price pattern
+        1.0 if _DATE_RE.search(s) else 0.0,  # 10: date pattern
+        1.0 if _TIME_RE.search(s) else 0.0,  # 11: time pattern
+        has_modifier,  # 12: has typical modifier indicator
+        punct / n,  # 13: frac of chars that are punct
+        ends_price,  # 14: if line ends w/ price
+        has_tax_kw,  # 15: if tax keyword
+        has_sub_kw,  # 16: if subtotal keyword
+        has_total_kw,  # 17: if total keyword
+        has_tip_kw,  # 18: if tip keyword
+        has_disc_kw,  # 19: if discount keyword
+        starts_digit,  # 20: if line starts with dig
     ]
 
 
